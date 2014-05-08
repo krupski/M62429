@@ -1,0 +1,69 @@
+///////////////////////////////////////////////////////////////////////////////
+//
+//  NEC/Renesas M62429 Digital Volume Control Driver Library for Arduino
+//  Copyright (c) 2014 Roger A. Krupski <rakrupski@verizon.net>
+//
+//  Last update: 08 May 2014
+//
+//  This program is free software: you can redistribute it and/or modify
+//  it under the terms of the GNU General Public License as published by
+//  the Free Software Foundation, either version 3 of the License, or
+//  (at your option) any later version.
+//
+//  This program is distributed in the hope that it will be useful,
+//  but WITHOUT ANY WARRANTY; without even the implied warranty of
+//  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+//  GNU General Public License for more details.
+//
+//  You should have received a copy of the GNU General Public License
+//  along with this program. If not, see <http://www.gnu.org/licenses/>.
+//
+///////////////////////////////////////////////////////////////////////////////
+
+M62429 Arduino Library - Function Reference
+==============================================================================
+
+Class: M62429
+Usage: static M62429 my_obj;
+Example: my_obj.init (clk, dat);
+
+==============================================================================
+
+Function: void init (uint8_t clock, uint8_t data);
+Usage: Initialize the Arduino pins used for CLOCK and DATA.
+Parameters:
+    clock - Arduino pin number connected to the M62429 clock pin.
+    data - Arduino pin number connected to the M62429 data pin.
+Returns: Nothing (void)
+
+==============================================================================
+
+Function: uint16_t setLeft (uint8_t volume);
+Usage: Set the volume for the LEFT channel (CH1)
+Parameters:
+    volume - value range 0...100, 0=quiet, 100=loud
+Returns: Data byte sent to the M62429 (for debugging only - may be ignored)
+         The data byte is sent to the M62429 chip LSB first.
+Note: Only 11 of the 16 bits are sent to the M62429.
+
+==============================================================================
+
+Function: uint16_t setRight (uint8_t volume);
+Usage: Set the volume for the RIGHT channel (CH2)
+Parameters:
+    volume - value range 0...100, 0=quiet, 100=loud
+Returns: Data byte sent to the M62429 (for debugging only - may be ignored)
+         The data byte is sent to the M62429 chip LSB first.
+Note: Only 11 of the 16 bits are sent to the M62429.
+
+==============================================================================
+
+Function: uint16_t setBoth (uint8_t volume);
+Usage: Set the volume for the LEFT and RIGHT channels (CH1 & CH2) simultaneously.
+Parameters:
+    volume - value range 0...100, 0=quiet, 100=loud
+Returns: Data byte sent to the M62429 (for debugging only - may be ignored)
+         The data byte is sent to the M62429 chip LSB first.
+Note: Only 11 of the 16 bits are sent to the M62429.
+
+==============================================================================

@@ -1,0 +1,10 @@
+#######################################
+# Syntax Coloring M62429
+#######################################
+
+M62429	KEYWORD1
+
+init	KEYWORD2
+setLeft	KEYWORD2
+setRight	KEYWORD2
+setBoth	KEYWORD2
