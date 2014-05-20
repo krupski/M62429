@@ -24,46 +24,101 @@ M62429 Arduino Library - Function Reference
 ==============================================================================
 
 Class: M62429
-Usage: static M62429 my_obj;
-Example: my_obj.init (clk, dat);
+
+Usage: static M62429 OBJ;
+
+Where:
+    'M62429' is the class name (must be M62429)
+    'OBJ' is the object name used to reference functions (may be anything you wish)
+
+Example: OBJ.init (clock, data);
+
+Where:
+    'clock' is the Arduino pin connected to the M62429 clock pin (pin 5)
+    'data' is the Arduino pin connected to the M62429 data pin (pin 4)
 
 ==============================================================================
 
 Function: void init (uint8_t clock, uint8_t data);
+
 Usage: Initialize the Arduino pins used for CLOCK and DATA.
+
 Parameters:
     clock - Arduino pin number connected to the M62429 clock pin.
     data - Arduino pin number connected to the M62429 data pin.
-Returns: Nothing (void)
+
+Returns: nothing (void)
 
 ==============================================================================
 
 Function: uint16_t setLeft (uint8_t volume);
-Usage: Set the volume for the LEFT channel (CH1)
-Parameters:
-    volume - value range 0...100, 0=quiet, 100=loud
-Returns: Data byte sent to the M62429 (for debugging only - may be ignored)
-         The data byte is sent to the M62429 chip LSB first.
-Note: Only 11 of the 16 bits are sent to the M62429.
+          uint16_t setRight (uint8_t volume);
+          uint16_t setBoth (uint8_t volume);
+
+Parameter: volume - value range 0...100, 0=zero volume, 100=full volume
+
+Usage: Set the volume for the LEFT channel (CH1), RIGHT channel (CH2)
+       or BOTH channels (CH1 & CH2) respectively.
+
+Note: volume > 100 is clipped to 100
+
+Note: Both channels are set simultaneously with the 'setBoth' function.
+
+Returns: data sent to chip
 
 ==============================================================================
 
-Function: uint16_t setRight (uint8_t volume);
-Usage: Set the volume for the RIGHT channel (CH2)
-Parameters:
-    volume - value range 0...100, 0=quiet, 100=loud
-Returns: Data byte sent to the M62429 (for debugging only - may be ignored)
-         The data byte is sent to the M62429 chip LSB first.
-Note: Only 11 of the 16 bits are sent to the M62429.
+Note: All three volume setting functions return a 16 bit word which is the
+      command that was sent to the M62429 chip. Only 11 bits are sent - the
+      rest are zero. The data is sent to the chip LSB first. The returned
+      data word is only for debugging purposes and may be ignored.
 
 ==============================================================================
 
-Function: uint16_t setBoth (uint8_t volume);
-Usage: Set the volume for the LEFT and RIGHT channels (CH1 & CH2) simultaneously.
-Parameters:
-    volume - value range 0...100, 0=quiet, 100=loud
-Returns: Data byte sent to the M62429 (for debugging only - may be ignored)
-         The data byte is sent to the M62429 chip LSB first.
-Note: Only 11 of the 16 bits are sent to the M62429.
+Data bits and their function (from the datasheet page 5):
+
+Bit 0: Channel Select.  0=CH1 (Left)
+                        1=CH2 (Right)
+
+Bit 1: One/Both Select. 0=Set both channels simultaneously
+                        1=Set each channel individually
+
+Bit 2: Attenuator 1 LSB \
+...                       (attenuator 1, steps of 4dB)
+Bit 6: Attenuator 1 MSB /
+
+Bit 7: Attenuator 2 LSB \ (attenuator 2, steps of 1dB)
+Bit 8: Attenuator 2 MSB /
+
+Bit 9:  Always 1
+Bit 10: Always 1
+
+Bit 11: Unused 0
+...
+Bit 15: Unused 0
 
 ==============================================================================
+
+M62429 Chip Pinout (Top View) (Datasheet Page 2)
+
+                 +--------+
+         VIN1  1=| *      |=8 VIN2
+        VOUT1  2=|        |=7 VOUT2
+          GND  3=| M62429 |=6 VCC
+         DATA  4=|        |=5 CLOCK
+                 +--------+
+
+Pin No.   Symbol   Function
+=======   ======   =====================
+   1        VIN1   1-ch input pin (left)
+   2       VOUT1   1-ch output pin (left)
+   3         GND   Ground pin
+   4        DATA   Control data input pin. Inputs data in synchronization with clock.
+   5       CLOCK   Clock input pin for transferring serial data.
+   6         VCC   Power supply pin. Stabilize the pin with decoupling capacitor.
+   7       VOUT2   2-ch output pin (right)
+   8        VIN2   2-ch input pin (right)
+
+==============================================================================
+
+{end of function_reference.txt}
