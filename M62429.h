@@ -1,9 +1,9 @@
 ///////////////////////////////////////////////////////////////////////////////
 //
 //  NEC/Renesas M62429 Digital Volume Control Driver Library for Arduino
-//  Copyright (c) 2014 Roger A. Krupski <rakrupski@verizon.net>
+//  Copyright (c) 2014, 2017 Roger A. Krupski <rakrupski@verizon.net>
 //
-//  Last update: 08 May 2014
+//  Last update: 16 February 2017
 //
 //  This program is free software: you can redistribute it and/or modify
 //  it under the terms of the GNU General Public License as published by
@@ -20,8 +20,8 @@
 //
 ///////////////////////////////////////////////////////////////////////////////
 
-#ifndef _M62429_H
-#define _M62429_H
+#ifndef M62429_H
+#define M62429_H
 
 #if ARDUINO < 100
 #include "WProgram.h"
@@ -29,27 +29,30 @@
 #include "Arduino.h"
 #endif
 
-#ifndef true
-#define true 1
-#endif
-
-#ifndef false
-#define false 0
-#endif
-
 class M62429
 {
-public:
-	void init (uint8_t, uint8_t);
-	uint16_t setLeft (uint8_t);
-	uint16_t setRight (uint8_t);
-	uint16_t setBoth (uint8_t);
+	public:
+		M62429 (uint8_t, uint8_t, uint8_t=99, uint8_t=99);
+		uint16_t setLeft (int8_t);
+		uint16_t setRight (int8_t);
+		uint16_t setBoth (int8_t);
 
-private:
-	uint8_t _CLK_PIN;
-	uint8_t _DAT_PIN;
-	uint16_t setVolume (uint8_t, bool, bool);
+	private:
+		void _init (uint8_t, uint8_t);
+		uint16_t _setVolume (int8_t, uint8_t, uint8_t);
+		uint8_t _CLK_BIT;
+		volatile uint8_t *_CLK_OUT;
+		volatile uint8_t *_CLK_DDR;
+		uint8_t _DAT_BIT;
+		volatile uint8_t *_DAT_OUT;
+		volatile uint8_t *_DAT_DDR;
+		uint8_t _VCC_BIT;
+		volatile uint8_t *_VCC_OUT;
+		volatile uint8_t *_VCC_DDR;
+		uint8_t _GND_BIT;
+		volatile uint8_t *_GND_OUT;
+		volatile uint8_t *_GND_DDR;
 };
 
-#endif
+#endif // #ifndef M62429_H
 
