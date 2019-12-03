@@ -1,9 +1,9 @@
 ///////////////////////////////////////////////////////////////////////////////
 //
 //  NEC/Renesas M62429 Digital Volume Control Driver Library for Arduino
-//  Copyright (c) 2014 Roger A. Krupski <rakrupski@verizon.net>
+//  Copyright (c) 2014, 2019 Roger A. Krupski <rakrupski@verizon.net>
 //
-//  Last update: 08 May 2014
+//  Last update: 02 December 2019
 //
 //  This program is free software: you can redistribute it and/or modify
 //  it under the terms of the GNU General Public License as published by
@@ -35,7 +35,7 @@
 #define clock_pin 6 // volume control board clock pin connected to Arduino pin 6
 #define data_pin 7 // volume control board data pin connected to Arduino pin 7
 
-static M62429 VOL; // <------------------------ important
+static M62429 VOL (clock_pin, data_pin); // <------------------------ important
 
 const char *spinner[] = {
 	"/", "-", "\\", "|"
@@ -46,10 +46,7 @@ uint8_t x, y;
 
 void setup (void)
 {
-	Serial.begin (9600);
-
-	VOL.init (clock_pin, data_pin); // <------------------------ important
-
+	Serial.begin (115200); // set baud rate to your liking
 	Serial.println ("Volume control initialized");
 }
 
@@ -62,23 +59,26 @@ void loop (void)
 	Serial.print ("B == Both at once\r\n\r\n");
 	Serial.print ("Your choice: ");
 
-	while (! Serial.available ());
+	while (! Serial.available());
 
-	c = toupper (Serial.read ());
+	c = toupper (Serial.read());
 
 	switch (c) {
 		case 'L': {
 			y = 0;
 			break;
 		}
+
 		case 'R': {
 			y = 1;
 			break;
 		}
+
 		case 'B': {
 			y = 2;
 			break;
 		}
+
 		default: {
 			Serial.print ("\r\n\r\n");
 			Serial.print ("Unrecognized command - please type L, R or B\r\n");
@@ -90,29 +90,33 @@ void loop (void)
 	for (x = 0; x <= 100; x++) {
 		switch (y) {
 			case 0: {
-				VOL.setLeft (x); // <------------------------ important
+				VOL.setLeft (x);
 				Serial.print ("\rLeft channel ");
-				Serial.print (spinner[x%4]);
+				Serial.print (spinner[x % 4]);
 				break;
 			}
+
 			case 1: {
-				VOL.setRight (x); // <------------------------ important
+				VOL.setRight (x);
 				Serial.print ("\rRight channel ");
-				Serial.print (spinner[x%4]);
+				Serial.print (spinner[x % 4]);
 				break;
 			}
+
 			case 2: {
-				VOL.setBoth (x); // <------------------------ important
+				VOL.setBoth (x);
 				Serial.print ("\rBoth channels ");
-				Serial.print (spinner[x%4]);
+				Serial.print (spinner[x % 4]);
 				break;
 			}
+
 			default: {
 				x = 100; // break out fast
 				break;
 			}
 		}
-		_delay_ms (100);
+
+		delay (100);
 	}
 
 	while (x--) {
@@ -120,27 +124,30 @@ void loop (void)
 			case 0: {
 				VOL.setLeft (x);
 				Serial.print ("\rLeft channel ");
-				Serial.print (spinner[x%4]);
+				Serial.print (spinner[x % 4]);
 				break;
 			}
+
 			case 1: {
 				VOL.setRight (x);
 				Serial.print ("\rRight channel ");
-				Serial.print (spinner[x%4]);
+				Serial.print (spinner[x % 4]);
 				break;
 			}
+
 			case 2: {
 				VOL.setBoth (x);
 				Serial.print ("\rBoth channels ");
-				Serial.print (spinner[x%4]);
+				Serial.print (spinner[x % 4]);
 				break;
 			}
+
 			default: {
 				x = 0; // break out fast
 				break;
 			}
 		}
-		_delay_ms (100);
+
+		delay (100);
 	}
 }
-

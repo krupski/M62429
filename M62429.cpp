@@ -1,9 +1,9 @@
 ///////////////////////////////////////////////////////////////////////////////
 //
 //  NEC/Renesas M62429 Digital Volume Control Driver Library for Arduino
-//  Copyright (c) 2014, 2017 Roger A. Krupski <rakrupski@verizon.net>
+//  Copyright (c) 2014, 2019 Roger A. Krupski <rakrupski@verizon.net>
 //
-//  Last update: 16 February 2017
+//  Last update: 02 December 2019
 //
 //  This program is free software: you can redistribute it and/or modify
 //  it under the terms of the GNU General Public License as published by
@@ -22,50 +22,7 @@
 
 #include "M62429.h"
 
-M62429::M62429 (uint8_t clk_pin, uint8_t dat_pin, uint8_t vcc_pin, uint8_t gnd_pin)
-{
-	uint8_t x;
-
-	// if a ground pin is specified, configure it
-	if (gnd_pin != 99) {
-		x = digitalPinToPort (gnd_pin); // pin -> port
-		_GND_OUT = portOutputRegister (x); // set gnd pin as output
-		_GND_DDR  = portModeRegister (x); // get gnd pin's DDR
-		_GND_BIT = digitalPinToBitMask (gnd_pin); // get gnd pin's bitmask
-		*_GND_OUT &= ~_GND_BIT; // set gnd pin low
-		*_GND_DDR |= _GND_BIT; // set gnd pin DDR to output
-	}
-
-	// if a vcc pin is specified, configure it
-	if (vcc_pin != 99) {
-		x = digitalPinToPort (vcc_pin); // pin -> port
-		_VCC_OUT  = portOutputRegister (x); // set vcc pin as output
-		_VCC_DDR   = portModeRegister (x); // get vcc pin's DDR
-		_VCC_BIT  = digitalPinToBitMask (vcc_pin); // get vcc pin's bitmask
-		*_VCC_OUT |= _VCC_BIT; // set vcc pin high
-		*_VCC_DDR |= _VCC_BIT; // set vcc pin DDR to output
-		__builtin_avr_delay_cycles ((F_CPU / 1e3) * 250); // let chip settle
-	}
-
-	_init (clk_pin, dat_pin);
-}
-
-uint16_t M62429::setLeft (int8_t vol) // set CH1 (pins 1 [in] and 2 [out])
-{
-	return _setVolume (vol, 0, 1);
-}
-
-uint16_t M62429::setRight (int8_t vol) // set CH2 (pins 8 [in] and 7 [out])
-{
-	return _setVolume (vol, 1, 1);
-}
-
-uint16_t M62429::setBoth (int8_t vol) // both simultaneously
-{
-	return _setVolume (vol, 0, 0);
-}
-
-void M62429::_init (uint8_t clk_pin, uint8_t dat_pin)
+M62429::M62429 (uint8_t clk_pin, uint8_t dat_pin)
 {
 	uint8_t x;
 
@@ -84,6 +41,21 @@ void M62429::_init (uint8_t clk_pin, uint8_t dat_pin)
 
 	*_DAT_DDR |= _DAT_BIT; // pinmode output
 	*_CLK_DDR |= _CLK_BIT; // pinmode output
+}
+
+uint16_t M62429::setLeft (int8_t vol) // set CH1 (pins 1 [in] and 2 [out])
+{
+	return _setVolume (vol, 0, 1);
+}
+
+uint16_t M62429::setRight (int8_t vol) // set CH2 (pins 8 [in] and 7 [out])
+{
+	return _setVolume (vol, 1, 1);
+}
+
+uint16_t M62429::setBoth (int8_t vol) // both simultaneously
+{
+	return _setVolume (vol, 0, 0);
 }
 
 uint16_t M62429::_setVolume (int8_t volume, uint8_t chan, uint8_t both)
@@ -109,19 +81,22 @@ uint16_t M62429::_setVolume (int8_t volume, uint8_t chan, uint8_t both)
 	data |= (1 << 10); // ...D10 must both be 1
 
 	for (bits = 0; bits < 11; bits++) { // send out 10 control bits
-		__builtin_avr_delay_cycles ((F_CPU / 1e6) * 2);
+		__builtin_avr_delay_cycles ((F_CPU / 1e6) * 2); // 2 usec
 		*_DAT_OUT &= ~_DAT_BIT;
-		__builtin_avr_delay_cycles ((F_CPU / 1e6) * 2);
+
+		__builtin_avr_delay_cycles ((F_CPU / 1e6) * 2); // 2 usec
 		*_CLK_OUT &= ~_CLK_BIT;
-		__builtin_avr_delay_cycles ((F_CPU / 1e6) * 2);
+
+		__builtin_avr_delay_cycles ((F_CPU / 1e6) * 2); // 2 usec
 		data & _BV(bits) ? *_DAT_OUT |= _DAT_BIT : *_DAT_OUT &= ~_DAT_BIT;
-		__builtin_avr_delay_cycles ((F_CPU / 1e6) * 2);
+
+		__builtin_avr_delay_cycles ((F_CPU / 1e6) * 2); // 2 usec
 		*_CLK_OUT |= _CLK_BIT;
 	}
 	// send final (11th) bit
-	__builtin_avr_delay_cycles ((F_CPU / 1e6) * 2);
+	__builtin_avr_delay_cycles ((F_CPU / 1e6) * 2); // 2 usec
 	*_DAT_OUT |= _DAT_BIT; // final clock latches data in
-	__builtin_avr_delay_cycles ((F_CPU / 1e6) * 2);
+	__builtin_avr_delay_cycles ((F_CPU / 1e6) * 2); // 2 usec
 	*_CLK_OUT &= ~_CLK_BIT;
 
 	return data; // return bit pattern in case you want it :)

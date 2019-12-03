@@ -1,9 +1,9 @@
 ///////////////////////////////////////////////////////////////////////////////
 //
 //  NEC/Renesas M62429 Digital Volume Control Driver Library for Arduino
-//  Copyright (c) 2014, 2017 Roger A. Krupski <rakrupski@verizon.net>
+//  Copyright (c) 2014, 2019 Roger A. Krupski <rakrupski@verizon.net>
 //
-//  Last update: 16 February 2017
+//  Last update: 02 December 2019
 //
 //  This program is free software: you can redistribute it and/or modify
 //  it under the terms of the GNU General Public License as published by
@@ -32,13 +32,11 @@
 class M62429
 {
 	public:
-		M62429 (uint8_t, uint8_t, uint8_t=99, uint8_t=99);
+		M62429 (uint8_t, uint8_t);
 		uint16_t setLeft (int8_t);
 		uint16_t setRight (int8_t);
 		uint16_t setBoth (int8_t);
-
 	private:
-		void _init (uint8_t, uint8_t);
 		uint16_t _setVolume (int8_t, uint8_t, uint8_t);
 		uint8_t _CLK_BIT;
 		volatile uint8_t *_CLK_OUT;
@@ -46,13 +44,6 @@ class M62429
 		uint8_t _DAT_BIT;
 		volatile uint8_t *_DAT_OUT;
 		volatile uint8_t *_DAT_DDR;
-		uint8_t _VCC_BIT;
-		volatile uint8_t *_VCC_OUT;
-		volatile uint8_t *_VCC_DDR;
-		uint8_t _GND_BIT;
-		volatile uint8_t *_GND_OUT;
-		volatile uint8_t *_GND_DDR;
 };
 
 #endif // #ifndef M62429_H
-
