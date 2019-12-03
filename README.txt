@@ -28,24 +28,21 @@ How to use the driver:
 #include <M62429.h>
 
 
-(2) Create an instance of the driver:
+(2) Create an instance of the driver. Supply the Arduino pins you are
+    using for CLOCK and DATA. For example, if you connected the CLOCK
+    pin to Arduino pin 6 and the DATA pin to Arduino pin 7, you would
+    initialize the driver as follows:
 
-static M62429 VOL;
+#define CLK 6 
+#define DAT 7
+static M62429 VOL (CLK, DAT);
+  -- or simply --
+static M62429 VOL (6, 7);
 
 (note: "VOL" can be anything you like)
 
 
-(3) Initialize the driver by telling it which Arduino pins you are
-    using for CLOCK and DATA. For example, if you connected the CLOCK
-    pin to Arduino pin 7 and the DATA pin to Arduino pin 6, you would
-    initialize the driver as follows:
-
-VOL.init (7, 6);
-
-    The init parameters are: init (CLOCK_PIN, DATA_PIN);
-
-
-(4) Set the volume of either channel individually or both channels at
+(3) Set the volume of either channel individually or both channels at
     the same time. Note the "Left" channel is CH1 and "Right" is CH2.
 
 VOL.setLeft (volume); // sets CH1 to "volume", 0...100
@@ -53,7 +50,6 @@ VOL.setLeft (volume); // sets CH1 to "volume", 0...100
 VOL.setRight (volume); // sets CH2 to "volume", 0...100
 
 VOL.setBoth (volume); // sets BOTH CH1 and CH2 to "volume", 0...100
-
 
 Note: "setBoth" sets both channels __simultaneously__ to provide glitch-free
 volume adjustment in stereo audio applications.
