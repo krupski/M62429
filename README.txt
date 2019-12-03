@@ -1,9 +1,9 @@
 ///////////////////////////////////////////////////////////////////////////////
 //
 //  NEC/Renesas M62429 Digital Volume Control Driver Library for Arduino
-//  Copyright (c) 2014 Roger A. Krupski <rakrupski@verizon.net>
+//  Copyright (c) 2014, 2019 Roger A. Krupski <rakrupski@verizon.net>
 //
-//  Last update: 08 May 2014
+//  Last update: 02 December 2019
 //
 //  This program is free software: you can redistribute it and/or modify
 //  it under the terms of the GNU General Public License as published by
@@ -21,7 +21,7 @@
 ///////////////////////////////////////////////////////////////////////////////
 
 
-How to use the driver:
+How to use the driver (also see the example sketch in the package):
 
 (1) Include the library in your sketch:
 
