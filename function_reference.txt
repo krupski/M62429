@@ -39,18 +39,6 @@ Where:
 
 ==============================================================================
 
-Function: void init (uint8_t clock, uint8_t data);
-
-Usage: Initialize the Arduino pins used for CLOCK and DATA.
-
-Parameters:
-    clock - Arduino pin number connected to the M62429 clock pin.
-    data - Arduino pin number connected to the M62429 data pin.
-
-Returns: nothing (void)
-
-==============================================================================
-
 Function: uint16_t setLeft (uint8_t volume);
           uint16_t setRight (uint8_t volume);
           uint16_t setBoth (uint8_t volume);
